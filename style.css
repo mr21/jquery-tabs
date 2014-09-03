@@ -1,0 +1,10 @@
+.jqtabs-content {
+	padding: 1em;
+	}
+	.jqtabs-content b {
+		padding: .2em .5em;
+		border-radius: 2px;
+		background: black;
+		}
+	.jqtabs-content b:before { content: "("; }
+	.jqtabs-content b:after  { content: ")"; }
