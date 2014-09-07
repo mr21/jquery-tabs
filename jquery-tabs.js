@@ -1,5 +1,5 @@
 /*
-	jQuery - tabs - 1.0
+	jQuery - tabs - 1.1
 	https://github.com/Mr21/jquery-tabs
 */
 
@@ -44,15 +44,18 @@ $.plugin_tabs.obj.prototype = {
 	// private:
 	_initContainer: function(jq_elem) {
 		var self = this;
-		if (!jq_elem.hasClass('.' + this.class_container))
+		if (!jq_elem.hasClass(this.class_container))
 			jq_elem = jq_elem.find('.' + this.class_container);
 		jq_elem.each(function() {
-			var	jq_this = $(this),
-				obj = new $.plugin_tabs.container(jq_this, self);
-			if (this.id)
-				self.container[this.id] = obj;
-			else
-				self.container.push(obj);
+			if (!this._jqtabs_ready) {
+				var	jq_this = $(this),
+					obj = new $.plugin_tabs.container(jq_this, self);
+				this._jqtabs_ready = true;
+				if (this.id)
+					self.container[this.id] = obj;
+				else
+					self.container.push(obj);
+			}
 		});
 	},
 	_watchDom: function() {

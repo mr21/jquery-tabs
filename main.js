@@ -13,8 +13,13 @@ $(function() {
 		}),
 		plugin_dragndrop = plugin_tabs.dragndrop();
 
-	if (plugin_dragndrop)
+	if (plugin_dragndrop) {
 		plugin_dragndrop.duration(200);
+		/*plugin_tabs.dragndrop().onDrop(function() {
+			lg('onDrop')
+			lg(arguments)
+		});*/
+	}
 
 	var tabsA = plugin_tabs.container['tabs_A'];
 });
