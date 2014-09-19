@@ -9,11 +9,13 @@
 <meta property="og:image"       content="http://mr21.fr/jquery-tabs/thumbnail.jpg"/>
 <meta property="og:description" content="jQuery-tabs is a plugin to manage tabs by dragndrop or not."/>
 <!-- CSS -->
+<link type="text/css" rel="stylesheet" href="../fa/css/font-awesome.css"/>
 <link type="text/css" rel="stylesheet" href="jquery-tabs.css"/>
 <link type="text/css" rel="stylesheet" href="../js-project-style.css"/>
 <link type="text/css" rel="stylesheet" href="style.css"/>
 <!-- JS -->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
+<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script> -->
+<script type="text/javascript" src="../jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="../jquery-dragndrop/jquery-dragndrop.js"></script>
 <script type="text/javascript" src="jquery-tabs.js"></script>
 <script type="text/javascript" src="main.js"></script>
@@ -24,16 +26,27 @@
 <!--<script>(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";fjs.parentNode.insertBefore(js,fjs);}(document,'script','facebook-jssdk'));</script>-->
 
 <div id="global">
-	<div id="title">
+
+	<div id="header">
 		<h1>
-			<span>jQuery - tabs - 1.1</span>
-			<a class="github" title="Watch it on GitHub" target="_blank" href="https://github.com/Mr21/jquery-tabs"></a>
+			<span>jQuery - tabs<b>1.2</b></span>
 			<div class="fb-like" data-href="http://mr21.fr/jquery-tabs/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
 		</h1>
+		<div class="menu">
+			<hr/>
+			<a href="#whatIsIt"   class="fa fa-info-circle" title="What is it ?"></a>
+			<a href="#needs"      class="fa fa-folder-open" title="Needs"></a>
+			<a href="#howToUseIt" class="fa fa-code"        title="How to use it ?"></a>
+			<a href="#whatsNew"   class="fa fa-newspaper-o" title="What's new ?"></a>
+			<a href="#demo"       class="fa fa-flask"       title="Demo"></a>
+			<hr class="sep"/>
+			<a href="https://github.com/Mr21/jquery-tabs" class="fa fa-github" title="Watch it on GitHub" target="_blank"></a>
+			<hr/>
+		</div>
 	</div>
 
 	<div class="rub" id="what">
-		<h2><a href="#whatIsIt" name="whatIsIt">What is it&nbsp;?</a></h2>
+		<h2><a href="#whatIsIt" name="whatIsIt"><i class="fa fa-info-circle"></i>What is it&nbsp;?</a></h2>
 		<p>
 			<img src="thumbnail.jpg"/>
 			This is another plugin to manage some tabs.
@@ -47,41 +60,44 @@
 	</div>
 
 	<div class="rub" id="needs">
-		<h2><a href="#needs" name="needs">Needs</a></h2>
+		<h2><a href="#needs" name="needs"><i class="fa fa-folder-open"></i>Needs</a></h2>
 		<p>This plugin need <b>3</b> or <b>4</b> files&nbsp;:</p>
 		<ul>
 			<li><a target="_blank" href="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js">jquery.js</a></li>
 			<li><a target="_blank" href="jquery-tabs.js">jquery-tabs.js</a></li>
 			<li><a target="_blank" href="jquery-tabs.css">jquery-tabs.css</a></li>
-			<li><a target="_blank" href="../jquery-dragndrop/jquery-dragndrop.js">jquery-dragndrop.js</a> (optional) only if you want to allow the move of the tabs.</li>
+			<li><a target="_blank" href="../jquery-dragndrop/jquery-dragndrop.js">jquery-dragndrop.js</a> <b>optional</b> (only if you want to allow the move of the tabs)</li>
 		</ul>
 	</div>
 
 	<div class="rub" id="help">
-		<h2><a href="#howToUseIt" name="howToUseIt">How to use it&nbsp;?</a></h2>
+		<h2><a href="#howToUseIt" name="howToUseIt"><i class="fa fa-code"></i>How to use it&nbsp;?</a></h2>
 		<script src="https://gist.github.com/Mr21/47f7f9236601a6d00864.js"></script>
 	</div>
 
 	<div class="rub" id="versions">
-		<h2><a href="#whatsNew" name="whatsNew">What's new&nbsp;?</a></h2>
+		<h2><a href="#whatsNew" name="whatsNew"><i class="fa fa-newspaper-o"></i>What's new&nbsp;?</a></h2>
 		<ul>
+			<li><b>1.2</b>Possibility to add new tab or remove it</li>
 			<li><b>1.1</b>Patch&nbsp;: bug on hasClass + CSS grayscale</li>
 			<li><b>1.0</b>First functional version&nbsp;!</li>
 		</ul>
 	</div>
 
 	<div class="rub" id="demo">
-		<h2><a href="#demo" name="demo">Demo</a></h2>
+		<h2><a href="#demo" name="demo"><i class="fa fa-flask"></i>Demo</a></h2>
 		<p>
 			Here, I have also included the <a href="../jquery-dragndrop">jquery-dragndrop</a> plugin,
 			so we can move the tabs.<br/>
 			Open the <b>debug-console</b> to watch the events in action.<br/>
+			<button class="newTabPrepend">plugin_tabs.container[0].newTabPrepend();</button><br/>
+			<button class="newTabAppend">plugin_tabs.container[0].newTabAppend();</button>
 		</p>
 		<div class="jqtabs" id="tabs_A">
 			<div class="jqtabs-tabs">
-				<div class="jqtabs-tab"><div><span>A. Lorem ipsum</span></div></div>
-				<div class="jqtabs-tab"><div><span>B. Dolor sit amet</span></div></div>
-				<div class="jqtabs-tab"><div><span>C. Consectetur adipiscing</span></div></div>
+				<div class="jqtabs-tab"><div><span>A. Lorem ipsum</span><a class="jqtabs-close fa fa-times-circle" href="#"></a></div></div>
+				<div class="jqtabs-tab"><div><span>B. Dolor sit amet</span><a class="jqtabs-close fa fa-times-circle" href="#"></a></div></div>
+				<div class="jqtabs-tab"><div><span>C. Consectetur adipiscing</span><a class="jqtabs-close fa fa-times-circle" href="#"></a></div></div>
 			</div>
 			<div class="jqtabs-contents">
 				<div class="jqtabs-content"><p>Look, just <b>A</b> because I don't be givin' no man a foot massage don't make it right for Marsellus to throw Antwone into a glass motherfuckin' house, fuckin' up the way the nigger talks. Motherfucker do that shit to me, he better paralyze my ass, 'cause I'll kill the motherfucker, know what I'm sayin'?</p></div>
@@ -91,9 +107,9 @@
 		</div>
 		<div class="jqtabs">
 			<div class="jqtabs-tabs">
-				<div class="jqtabs-tab"><div><span>D. Elit, sed do</span></div></div>
-				<div class="jqtabs-tab jqtabs-tabActive"><div><span>E. Eiusmod tempor</span></div></div>
-				<div class="jqtabs-tab"><div><span>F. Incididunt ut labore</span></div></div>
+				<div class="jqtabs-tab"><div><span>D. Elit, sed do</span><a class="jqtabs-close fa fa-times-circle" href="#"></a></div></div>
+				<div class="jqtabs-tab jqtabs-tabActive"><div><span>E. Eiusmod tempor</span><a class="jqtabs-close fa fa-times-circle" href="#"></a></div></div>
+				<div class="jqtabs-tab"><div><span>F. Incididunt ut labore</span><a class="jqtabs-close fa fa-times-circle" href="#"></a></div></div>
 			</div>
 			<div class="jqtabs-contents">
 				<div class="jqtabs-content"><p>The path of the righteous man is beset on all sides by the iniquities of the selfish and the tyranny of evil <b>D</b> men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of darkness, for he is truly his brother's keeper and the finder of lost children. And I will strike down upon thee with great vengeance and furious anger those who would attempt to poison and destroy My brothers. And you will know My name is the Lord when I lay My vengeance upon thee.</p></div>

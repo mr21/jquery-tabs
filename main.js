@@ -4,22 +4,28 @@ $(function() {
 	var
 		plugin_tabs = $.plugin_tabs($('#demo'), {
 			// noDragndrop: true,
+			// duration: 200,
 			onChange: function(jq_tab, jq_content) {
-				lg('>>> onChange');
+				lg('>>> callback_onChange')
 				lg(jq_tab);
 				lg(jq_content);
 				lg('');
+			},
+			onNewTab: function(jq_tab, jq_content) {
+				lg('>>> callback_onNewTab')
+				jq_tab.html(
+					'<div>'+
+						'<span>newTab</span>'+
+						'<a class="jqtabs-close fa fa-times-circle" href="#"></a>'+
+					'</div>'
+				);
 			}
 		}),
-		plugin_dragndrop = plugin_tabs.dragndrop();
+		tabsA = plugin_tabs.container['tabs_A']
+	;
 
-	if (plugin_dragndrop) {
-		plugin_dragndrop.duration(200);
-		/*plugin_tabs.dragndrop().onDrop(function() {
-			lg('onDrop')
-			lg(arguments)
-		});*/
-	}
+	$('.newTabAppend') .click(function() { tabsA.newTabAppend();  });
+	$('.newTabPrepend').click(function() { tabsA.newTabPrepend(); });
 
-	var tabsA = plugin_tabs.container['tabs_A'];
+	window.tabsA = tabsA; // debug
 });

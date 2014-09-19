@@ -1,5 +1,5 @@
 /*
-	jQuery - tabs - 1.1
+	jQuery - tabs - 1.2
 	https://github.com/Mr21/jquery-tabs
 */
 
@@ -27,10 +27,12 @@
 			right: 0;
 			bottom: 0;
 			height: 5px;
+			border-bottom: 1px solid #444;
 			background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,.33) 100%);
 			background:    -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,.33) 100%);
 			background:     -ms-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,.33) 100%);
-			border-bottom: 1px solid #444;
+			background:      -o-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,.33) 100%);
+			background:         linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,.33) 100%);
 			}
 		.jqtabs-tabs:after {
 			content: "";
@@ -41,8 +43,15 @@
 		.jqtabs-tab {
 			float: left;
 			position: relative;
-			width: 140px;
 			overflow: hidden;
+			}
+		.jqtabs-tab {
+			width: 140px;
+			-webkit-transition: width .2s ease;
+			   -moz-transition: width .2s ease;
+			    -ms-transition: width .2s ease;
+			     -o-transition: width .2s ease;
+			        transition: width .2s ease;
 			}
 		.jqtabs-tabHole {
 			width: 0px;
@@ -65,7 +74,7 @@
 				right: 9px;
 				top: 0;
 				bottom: 0;
-				padding: 9px 9px 0;
+				padding: 9px 24px 0 9px;
 				cursor: pointer;
 				border: 1px solid #777;
 				border-bottom: 0;
@@ -74,6 +83,8 @@
 				-webkit-transition: all .2s ease;
 				   -moz-transition: all .2s ease;
 				    -ms-transition: all .2s ease;
+				     -o-transition: all .2s ease;
+				        transition: all .2s ease;
 				}
 				.jqtabs-tabActive div {
 					border-color: #444;
@@ -93,6 +104,20 @@
 						color: #ddd;
 						text-shadow: 0 0 5px rgba(255,255,255,.4);
 						}
+				.jqtabs-tabClosing {
+					width: 0;
+					}
+				.jqtabs-close {
+					position: absolute;
+					z-index: 1;
+					top: 8px;
+					right: 5px;
+					color: rgba(255,255,255,.2);
+					}
+					.jqtabs-close:hover {
+						border: none;
+						color: rgba(255,255,255,.5);
+						}
 				.jqtabs-tab > *:before,
 				.jqtabs-tab > *:after {
 					content: "";
@@ -109,6 +134,8 @@
 					-webkit-transform: rotate(15deg);
 					   -moz-transform: rotate(15deg);
 					    -ms-transform: rotate(15deg);
+					     -o-transform: rotate(15deg);
+					        transform: rotate(15deg);
 					}
 				.jqtabs-tab > *:after {
 					right: -8px;
@@ -117,6 +144,8 @@
 					-webkit-transform: rotate(-15deg);
 					   -moz-transform: rotate(-15deg);
 					    -ms-transform: rotate(-15deg);
+					     -o-transform: rotate(-15deg);
+					        transform: rotate(-15deg);
 					}
 	.jqtabs-contents {
 		height: 150px;
@@ -125,7 +154,15 @@
 		.jqtabs-content {
 			display: none;
 			height: 100%;
+			-webkit-transition: opacity .2s ease;
+			   -moz-transition: opacity .2s ease;
+			    -ms-transition: opacity .2s ease;
+			     -o-transition: opacity .2s ease;
+			        transition: opacity .2s ease;
 			}
 			.jqtabs-contentActive {
 				display: block;
+				}
+			.jqtabs-contentClosing {
+				opacity: 0;
 				}

@@ -1,5 +1,5 @@
 /*
-	jQuery - tabs - 1.1
+	jQuery - tabs - 1.2
 	https://github.com/Mr21/jquery-tabs
 */
 
@@ -21,10 +21,12 @@ $.plugin_tabs.obj = function(jq_parent, options) {
 	this.class_contents      = options.class_contents      || 'jqtabs-contents';
 	this.class_content       = options.class_content       || 'jqtabs-content';
 	this.class_contentActive = options.class_contentActive || 'jqtabs-contentActive';
+	this.duration = options.duration === undefined ? 200 : options.duration;
 	this.jq_parent = jq_parent;
 	this.container = [];
 	this.applyThis(options.applyThis);
 	this.onChange(options.onChange);
+	this.onNewTab(options.onNewTab);
 
 	if (!options.noDragndrop && $.plugin_dragndrop)
 		this._dragndropInit();
@@ -34,13 +36,13 @@ $.plugin_tabs.obj = function(jq_parent, options) {
 
 $.plugin_tabs.obj.prototype = {
 	// public:
-	dragndrop: function() { return this.plugin_dragndrop; },
 	applyThis: function(app) {
 		if (app !== undefined)
 			return this.app = app, this;
 		return this.app;
 	},
-	onChange: function(cb) { this.cbChange = cb; return this; },
+	onChange: function(f) { this.cbChange = f; return this; },
+	onNewTab: function(f) { this.cbNewTab = f; return this; },
 	// private:
 	_initContainer: function(jq_elem) {
 		var self = this;
@@ -72,6 +74,7 @@ $.plugin_tabs.obj.prototype = {
 				dragHoleClass : this.class_tabHole,
 				noSelection   : true
 			})
+			.duration(this.duration)
 			.onDrag(function(jq_drops, jq_tabs) {
 				jq_drops[0]._jqtabs_container._onDrag(jq_tabs);
 			})
@@ -84,69 +87,155 @@ $.plugin_tabs.obj.prototype = {
 };
 
 $.plugin_tabs.container = function(jq_parent, plugin_jqtabs) {
-	this.jq_tabActive = null;
+	this.jq_activeTab = null;
 	this.jq_parent = jq_parent;
 	this.plugin_jqtabs = plugin_jqtabs;
 	this.jq_tabs = this.jq_parent.find('.' + plugin_jqtabs.class_tabs);
 	this.jq_contents = this.jq_parent.find('.' + plugin_jqtabs.class_contents);
 	this.jq_tabs[0]._jqtabs_container = this;
+	this._findTabs();
 	this._init();
 };
 
 $.plugin_tabs.container.prototype = {
 	// public:
 	getTabs: function() {
-		return this.jq_tabs.children('.' + this.plugin_jqtabs.class_tab);
+		return this.jq_arrayTabs;
+	},
+	getActiveTab: function() {
+		return this.jq_activeTab;
+	},
+	getActiveContent: function() {
+		return this.jq_activeTab
+			? this.jq_activeTab[0]._jqtabs_jqContent
+			: null;
 	},
 	prevTab: function() {
-		this._clickTab(this.jq_tabActive.prevAll('.' + this.plugin_jqtabs.class_tab).eq(0));
+		this._clickTab(this.jq_activeTab.prevAll('.' + this.plugin_jqtabs.class_tab).eq(0));
+		return this;
 	},
 	nextTab: function() {
-		this._clickTab(this.jq_tabActive.nextAll('.' + this.plugin_jqtabs.class_tab).eq(0));
+		this._clickTab(this.jq_activeTab.nextAll('.' + this.plugin_jqtabs.class_tab).eq(0));
+		return this;
+	},
+	newTabAppend:  function() {
+		var jq_tabs = this.getTabs();
+		this._newTab(
+			jq_tabs[0]
+				? 'insertAfter'
+				: 'prependTo',
+			jq_tabs[0]
+				? jq_tabs.eq(-1)
+				: this.jq_tabs
+		);
+		return this;
+	},
+	newTabPrepend: function() {
+		var jq_tabs = this.getTabs();
+		this._newTab(
+			jq_tabs[0]
+				? 'insertBefore'
+				: 'prependTo',
+			jq_tabs[0]
+				? jq_tabs.eq(0)
+				: this.jq_tabs
+		);
+		return this;
+	},
+	removeTab: function(jq_tab, delay) {
+		var self = this,
+			jq_content = jq_tab[0]._jqtabs_jqContent;
+		function f() {
+			if (jq_tab[0] === self.jq_activeTab[0]) {
+				var jq_next = jq_tab.next();
+				if (!jq_next[0])
+					jq_next = jq_tab.prev();
+			}
+			jq_tab.remove();
+			jq_content.remove();
+			self._findTabs();
+			if (jq_next) {
+				if (jq_next[0])
+					self._clickTab(jq_next);
+				else
+					self.jq_activeTab = null;
+			}
+		}
+		if (delay === undefined)
+			delay = this.plugin_jqtabs.duration;
+		if (!delay) {
+			f();
+		} else {
+			jq_tab.addClass('jqtabs-tabClosing');
+			jq_content.addClass('jqtabs-contentClosing');
+			setTimeout(f, delay);
+		}
+		return this;
 	},
 	// private:
+	_findTabs: function() {
+		this.jq_arrayTabs = this.jq_tabs.children('.' + this.plugin_jqtabs.class_tab);
+	},
+	_newTab: function(attachFn, element) {
+		var
+			jq_tab = $('<div>')
+				.addClass(this.plugin_jqtabs.class_tab)
+				[attachFn](element),
+			jq_content = $('<div>')
+				.addClass(this.plugin_jqtabs.class_content)
+				.appendTo(this.jq_contents);
+		this._findTabs();
+		if (this.plugin_jqtabs.cbNewTab)
+			this.plugin_jqtabs.cbNewTab.call(this.plugin_jqtabs.app, jq_tab, jq_content);
+		this._initTab(jq_tab, jq_content);
+		this._clickTab(jq_tab);
+	},
 	_init: function() {
 		var	self = this,
 			jq_tabs = this.getTabs(),
 			jq_contents = this.jq_contents.children('.' + this.plugin_jqtabs.class_content);
 		jq_tabs.each(function(i) {
 			var jq_tab = jq_tabs.eq(i);
-			this._jqtabs_container = self;
-			this._jqtabs_jqContent = jq_contents.eq(i);
-			if (jq_tab.hasClass(self.plugin_jqtabs.class_tabActive)) {
+			self._initTab(jq_tab, jq_contents.eq(i));
+			if (jq_tab.hasClass(self.plugin_jqtabs.class_tabActive))
 				self._activeTab(jq_tab);
-			}
-			jq_tab.mousedown(function(e) {
-				if (e.button === 0)
-					this._jqtabs_container._clickTab(jq_tab);
-			});
 		});
-		if (!this.jq_tabActive)
+		if (!this.jq_activeTab && jq_tabs[0])
 			this._activeTab(jq_tabs.eq(0));
 	},
+	_initTab: function(jq_tab, jq_content) {
+		var self = this;
+		jq_tab[0]._jqtabs_container = this;
+		jq_tab[0]._jqtabs_jqContent = jq_content;
+		jq_tab.find('.jqtabs-close')
+			.mousedown(false)
+			.click(function() {
+				self.removeTab(jq_tab);
+				return false;
+			});
+		jq_tab.mousedown(function(e) {
+			if (e.button === 0)
+				this._jqtabs_container._clickTab(jq_tab);
+		});
+	},
 	_activeTab: function(jq_tab) {
-		this.jq_tabActive = jq_tab.addClass(this.plugin_jqtabs.class_tabActive);
-		jq_tab[0]._jqtabs_isActive = true;
+		this.jq_activeTab = jq_tab.addClass(this.plugin_jqtabs.class_tabActive);
 		jq_tab[0]._jqtabs_jqContent.addClass(this.plugin_jqtabs.class_contentActive);
 		if (this.plugin_jqtabs.cbChange)
 			this.plugin_jqtabs.cbChange(jq_tab, jq_tab[0]._jqtabs_jqContent);
 	},
 	_desactiveTab: function() {
-		if (this.jq_tabActive[0]) {
-			this.jq_tabActive.removeClass(this.plugin_jqtabs.class_tabActive)[0]._jqtabs_isActive = false;
-			this.jq_tabActive[0]._jqtabs_jqContent.removeClass(this.plugin_jqtabs.class_contentActive);
+		if (this.jq_activeTab[0]) {
+			this.jq_activeTab.removeClass(this.plugin_jqtabs.class_tabActive);
+			this.jq_activeTab[0]._jqtabs_jqContent.removeClass(this.plugin_jqtabs.class_contentActive);
 		}
 	},
 	_clickTab: function(jq_tab) {
-		if (jq_tab[0] && !jq_tab[0]._jqtabs_isActive) {
-			this._desactiveTab();
+		if (jq_tab[0] && jq_tab[0] !== this.jq_activeTab[0]) {
+			if (this.jq_activeTab)
+				this._desactiveTab();
 			this._activeTab(jq_tab);
 		}
-	},
-	_zindex: function() {
-		this.getTabs().each(function() {
-			
-		});
 	},
 	_onDrag: function(jq_tab) {
 		jq_tab[0]._jqtabs_jqContent.detach();
@@ -154,13 +243,12 @@ $.plugin_tabs.container.prototype = {
 		if (jq_newTabActive[0])
 			this._activeTab(jq_newTabActive);
 		else
-			this.jq_tabActive = null;
+			this.jq_activeTab = null;
 	},
 	_onDrop: function(jq_tab) {
-		if (this.jq_tabActive)
+		if (this.jq_activeTab)
 			this._desactiveTab();
 		this.jq_contents.append(jq_tab[0]._jqtabs_jqContent);
 		this._activeTab(jq_tab);
-		this._zindex();
 	}
 };
