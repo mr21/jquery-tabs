@@ -204,13 +204,12 @@ $.plugin_tabs.container.prototype = {
 			this._activeTab(jq_tabs.eq(0));
 	},
 	_initTab: function(jq_tab, jq_content) {
-		var self = this;
 		jq_tab[0]._jqtabs_container = this;
 		jq_tab[0]._jqtabs_jqContent = jq_content;
 		jq_tab.find('.jqtabs-close')
 			.mousedown(false)
 			.click(function() {
-				self.removeTab(jq_tab);
+				jq_tab[0]._jqtabs_container.removeTab(jq_tab);
 				return false;
 			});
 		jq_tab.mousedown(function(e) {
