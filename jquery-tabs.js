@@ -239,6 +239,7 @@ $.plugin_tabs.container.prototype = {
 	},
 	_onDrag: function(jq_tab) {
 		jq_tab[0]._jqtabs_jqContent.detach();
+		this._findTabs();
 		var jq_newTabActive = this.getTabs().eq(0);
 		if (jq_newTabActive[0])
 			this._activeTab(jq_newTabActive);
@@ -246,6 +247,7 @@ $.plugin_tabs.container.prototype = {
 			this.jq_activeTab = null;
 	},
 	_onDrop: function(jq_tab) {
+		this._findTabs();
 		if (this.jq_activeTab)
 			this._desactiveTab();
 		this.jq_contents.append(jq_tab[0]._jqtabs_jqContent);

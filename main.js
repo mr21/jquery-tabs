@@ -7,8 +7,8 @@ $(function() {
 			// duration: 200,
 			onChange: function(jq_tab, jq_content) {
 				lg('>>> callback_onChange')
-				lg(jq_tab);
-				lg(jq_content);
+				lg(jq_tab.find('span').text());
+				lg(jq_content.find('p').text().substr(0, 25));
 				lg('');
 			},
 			onNewTab: function(jq_tab, jq_content) {
