@@ -21,6 +21,7 @@ $.plugin_tabs.obj = function(jq_parent, options) {
 	this.class_contents      = options.class_contents      || 'jqtabs-contents';
 	this.class_content       = options.class_content       || 'jqtabs-content';
 	this.class_contentActive = options.class_contentActive || 'jqtabs-contentActive';
+	this.class_btnNewTab     = options.class_btnNewTab     || 'jqtabs-newTab';
 	this.duration = options.duration === undefined ? 200 : options.duration;
 	this.jq_parent = jq_parent;
 	this.container = [];
@@ -87,11 +88,12 @@ $.plugin_tabs.obj.prototype = {
 };
 
 $.plugin_tabs.container = function(jq_parent, plugin_jqtabs) {
+	this.plugin_jqtabs = plugin_jqtabs;
 	this.jq_activeTab = null;
 	this.jq_parent = jq_parent;
-	this.plugin_jqtabs = plugin_jqtabs;
 	this.jq_tabs = this.jq_parent.find('.' + plugin_jqtabs.class_tabs);
 	this.jq_contents = this.jq_parent.find('.' + plugin_jqtabs.class_contents);
+	this.jq_btnNewTabs = this.jq_tabs.find('.' + plugin_jqtabs.class_btnNewTab);
 	this.jq_tabs[0]._jqtabs_container = this;
 	this._findTabs();
 	this._init();
@@ -118,18 +120,6 @@ $.plugin_tabs.container.prototype = {
 		this._clickTab(this.jq_activeTab.nextAll('.' + this.plugin_jqtabs.class_tab).eq(0));
 		return this;
 	},
-	newTabAppend:  function() {
-		var jq_tabs = this.getTabs();
-		this._newTab(
-			jq_tabs[0]
-				? 'insertAfter'
-				: 'prependTo',
-			jq_tabs[0]
-				? jq_tabs.eq(-1)
-				: this.jq_tabs
-		);
-		return this;
-	},
 	newTabPrepend: function() {
 		var jq_tabs = this.getTabs();
 		this._newTab(
@@ -142,14 +132,26 @@ $.plugin_tabs.container.prototype = {
 		);
 		return this;
 	},
+	newTabAppend:  function() {
+		var jq_tabs = this.getTabs();
+		this._newTab(
+			jq_tabs[0]
+				? 'insertAfter'
+				: 'prependTo',
+			jq_tabs[0]
+				? jq_tabs.eq(-1)
+				: this.jq_tabs
+		);
+		return this;
+	},
 	removeTab: function(jq_tab, delay) {
 		var self = this,
 			jq_content = jq_tab[0]._jqtabs_jqContent;
 		function f() {
 			if (jq_tab[0] === self.jq_activeTab[0]) {
-				var jq_next = jq_tab.next();
+				var jq_next = jq_tab.nextAll('.jqtabs-tab:first');
 				if (!jq_next[0])
-					jq_next = jq_tab.prev();
+					jq_next = jq_tab.prevAll('.jqtabs-tab:first');
 			}
 			jq_tab.remove();
 			jq_content.remove();
@@ -200,6 +202,10 @@ $.plugin_tabs.container.prototype = {
 			if (jq_tab.hasClass(self.plugin_jqtabs.class_tabActive))
 				self._activeTab(jq_tab);
 		});
+		this.jq_btnNewTabs.click(function() {
+			self.newTabAppend();
+			return false;
+		});
 		if (!this.jq_activeTab && jq_tabs[0])
 			this._activeTab(jq_tabs.eq(0));
 	},
@@ -230,7 +236,7 @@ $.plugin_tabs.container.prototype = {
 		}
 	},
 	_clickTab: function(jq_tab) {
-		if (jq_tab[0] && jq_tab[0] !== this.jq_activeTab[0]) {
+		if (jq_tab[0] && (this.jq_activeTab === null || jq_tab[0] !== this.jq_activeTab[0])) {
 			if (this.jq_activeTab)
 				this._desactiveTab();
 			this._activeTab(jq_tab);

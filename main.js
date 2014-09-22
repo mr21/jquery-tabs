@@ -2,6 +2,7 @@ function lg(s) { console.log(s); }
 
 $(function() {
 	var
+		tabNumber = 0,
 		plugin_tabs = $.plugin_tabs($('#demo'), {
 			// noDragndrop: true,
 			// duration: 200,
@@ -15,9 +16,12 @@ $(function() {
 				lg('>>> callback_onNewTab')
 				jq_tab.html(
 					'<div>'+
-						'<span>newTab</span>'+
+						'<span>NewTab-'+(++tabNumber)+'</span>'+
 						'<a class="jqtabs-close fa fa-times-circle" href="#"></a>'+
 					'</div>'
+				);
+				jq_content.html(
+					'<p>NewTab: <b>'+tabNumber+'</b></p>'
 				);
 			}
 		}),

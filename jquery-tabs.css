@@ -39,6 +39,15 @@
 			display: block;
 			clear: both;
 			}
+		.jqtabs-newTab {
+			margin: 6px 0 0 15px;
+			color: rgba(255,255,255,.2);
+			font-size: 18px;
+			}
+			.jqtabs-newTab:hover {
+				color: rgba(255,255,255,.6);
+				border: 0;
+				}
 		.jqtabs-tabHole,
 		.jqtabs-tab {
 			float: left;
