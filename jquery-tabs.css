@@ -39,12 +39,12 @@
 			display: block;
 			clear: both;
 			}
-		.jqtabs-newTab {
+		.jqtabs-btnNewTab {
 			margin: 6px 0 0 15px;
 			color: rgba(255,255,255,.2);
 			font-size: 18px;
 			}
-			.jqtabs-newTab:hover {
+			.jqtabs-btnNewTab:hover {
 				color: rgba(255,255,255,.6);
 				border: 0;
 				}
@@ -116,14 +116,14 @@
 				.jqtabs-tabClosing {
 					width: 0;
 					}
-				.jqtabs-close {
+				.jqtabs-btnCloseTab {
 					position: absolute;
 					z-index: 1;
 					top: 8px;
 					right: 5px;
 					color: rgba(255,255,255,.2);
 					}
-					.jqtabs-close:hover {
+					.jqtabs-btnCloseTab:hover {
 						border: none;
 						color: rgba(255,255,255,.5);
 						}

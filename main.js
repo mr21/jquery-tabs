@@ -17,7 +17,7 @@ $(function() {
 				jq_tab.html(
 					'<div>'+
 						'<span>NewTab-'+(++tabNumber)+'</span>'+
-						'<a class="jqtabs-close fa fa-times-circle" href="#"></a>'+
+						'<a class="jqtabs-btnCloseTab fa fa-times-circle" href="#"></a>'+
 					'</div>'
 				);
 				jq_content.html(

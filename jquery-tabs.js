@@ -13,24 +13,26 @@ $.plugin_tabs = function(parent, options) {
 };
 
 $.plugin_tabs.obj = function(jq_parent, options) {
-	this.class_container     = options.class_container     || 'jqtabs';
-	this.class_tabs          = options.class_tabs          || 'jqtabs-tabs';
-	this.class_tab           = options.class_tab           || 'jqtabs-tab';
-	this.class_tabActive     = options.class_tabActive     || 'jqtabs-tabActive';
-	this.class_tabHole       = options.class_tabHole       || 'jqtabs-tabHole';
-	this.class_contents      = options.class_contents      || 'jqtabs-contents';
-	this.class_content       = options.class_content       || 'jqtabs-content';
-	this.class_contentActive = options.class_contentActive || 'jqtabs-contentActive';
-	this.class_btnNewTab     = options.class_btnNewTab     || 'jqtabs-newTab';
-	this.duration = options.duration === undefined ? 200 : options.duration;
+	this.class_container      = options.class_container      || 'jqtabs';
+	this.class_tabs           = options.class_tabs           || 'jqtabs-tabs';
+	this.class_tab            = options.class_tab            || 'jqtabs-tab';
+	this.class_tabActive      = options.class_tabActive      || 'jqtabs-tabActive';
+	this.class_tabHole        = options.class_tabHole        || 'jqtabs-tabHole';
+	this.class_contents       = options.class_contents       || 'jqtabs-contents';
+	this.class_content        = options.class_content        || 'jqtabs-content';
+	this.class_contentActive  = options.class_contentActive  || 'jqtabs-contentActive';
+	this.class_btnNewTab      = options.class_btnNewTab      || 'jqtabs-btnNewTab';
+	this.class_btnCloseTab    = options.class_btnCloseTab    || 'jqtabs-btnCloseTab';
+	this.class_tabClosing     = options.class_tabClosing     || 'jqtabs-tabClosing';
+	this.class_contentClosing = options.class_contentClosing || 'jqtabs-contentClosing';
 	this.jq_parent = jq_parent;
 	this.container = [];
-	this.applyThis(options.applyThis);
-	this.onChange(options.onChange);
-	this.onNewTab(options.onNewTab);
-
 	if (!options.noDragndrop && $.plugin_dragndrop)
 		this._dragndropInit();
+	this.applyThis(options.applyThis);
+	this.duration(options.duration === undefined ? 200 : options.duration);
+	this.onChange(options.onChange);
+	this.onNewTab(options.onNewTab);
 	this._watchDom();
 	this._initContainer(jq_parent);
 };
@@ -41,6 +43,14 @@ $.plugin_tabs.obj.prototype = {
 		if (app !== undefined)
 			return this.app = app, this;
 		return this.app;
+	},
+	duration: function(ms) {
+		if (arguments.length === 0)
+			return this.ms;
+		this.ms = ms;
+		if (this.plugin_dragndrop)
+			this.plugin_dragndrop.duration(ms);
+		return this;
 	},
 	onChange: function(f) { this.cbChange = f; return this; },
 	onNewTab: function(f) { this.cbNewTab = f; return this; },
@@ -75,7 +85,6 @@ $.plugin_tabs.obj.prototype = {
 				dragHoleClass : this.class_tabHole,
 				noSelection   : true
 			})
-			.duration(this.duration)
 			.onDrag(function(jq_drops, jq_tabs) {
 				jq_drops[0]._jqtabs_container._onDrag(jq_tabs);
 			})
@@ -149,9 +158,9 @@ $.plugin_tabs.container.prototype = {
 			jq_content = jq_tab[0]._jqtabs_jqContent;
 		function f() {
 			if (jq_tab[0] === self.jq_activeTab[0]) {
-				var jq_next = jq_tab.nextAll('.jqtabs-tab:first');
+				var jq_next = jq_tab.nextAll('.' + self.plugin_jqtabs.class_tab + ':first');
 				if (!jq_next[0])
-					jq_next = jq_tab.prevAll('.jqtabs-tab:first');
+					jq_next = jq_tab.prevAll('.' + self.plugin_jqtabs.class_tab + ':first');
 			}
 			jq_tab.remove();
 			jq_content.remove();
@@ -164,12 +173,12 @@ $.plugin_tabs.container.prototype = {
 			}
 		}
 		if (delay === undefined)
-			delay = this.plugin_jqtabs.duration;
+			delay = this.plugin_jqtabs.ms;
 		if (!delay) {
 			f();
 		} else {
-			jq_tab.addClass('jqtabs-tabClosing');
-			jq_content.addClass('jqtabs-contentClosing');
+			jq_tab.addClass(this.plugin_jqtabs.class_tabClosing);
+			jq_content.addClass(this.plugin_jqtabs.class_contentClosing);
 			setTimeout(f, delay);
 		}
 		return this;
@@ -212,7 +221,7 @@ $.plugin_tabs.container.prototype = {
 	_initTab: function(jq_tab, jq_content) {
 		jq_tab[0]._jqtabs_container = this;
 		jq_tab[0]._jqtabs_jqContent = jq_content;
-		jq_tab.find('.jqtabs-close')
+		jq_tab.find('.' + this.plugin_jqtabs.class_btnCloseTab)
 			.mousedown(false)
 			.click(function() {
 				jq_tab[0]._jqtabs_container.removeTab(jq_tab);
