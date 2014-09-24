@@ -1,5 +1,5 @@
 /*
-	jQuery - tabs - 1.2
+	jQuery - tabs - 1.3
 	https://github.com/Mr21/jquery-tabs
 */
 
