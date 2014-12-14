@@ -10,7 +10,7 @@ $(function() {
 
 	var
 		tabNumber = 0,
-		plugin_tabs = $.plugin_tabs($('#demo'), {
+		plugin_tabs = $.plugin_tabs(document.body, {
 			// noDragndrop: true,
 			// duration: 200,
 			onChange: function(jq_tab, jq_content) {
@@ -30,7 +30,7 @@ $(function() {
 			},
 			onBeforeRemoveTab: function(jq_tab, jq_content) {
 				show('onBeforeRemoveTab', jq_tab, jq_content);
-				if (0)
+				if (0) // block the deletion or not
 					return false;
 			},
 			onAfterRemoveTab: function(jq_tab, jq_content, container) {
