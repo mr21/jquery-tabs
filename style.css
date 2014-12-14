@@ -1,18 +1,18 @@
 body {
 	font: 14px sans-serif;
-	line-height: 20px;
 	}
-	a {
-		text-decoration: none;
-		}
 
 .jqtabs {
 	margin-top: 25px;
 	padding-top: 10px;
 	color: #ddd;
+	line-height: 20px;
 	border-radius: 4px;
 	background: #111;
 	}
+	.jqtabs a {
+		text-decoration: none;
+		}
 	.jqtabs-tabs {
 		padding-left: 15px;
 		}

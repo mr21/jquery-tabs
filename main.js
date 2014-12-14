@@ -1,6 +1,8 @@
 function lg(s) { console.log(s); }
 
 $(function() {
+	$('#moreAt')[top.location === self.location ? 'show' : 'remove']();
+
 	function show(cb, jq_tab, jq_content) {
 		lg('>>> ' + cb)
 		lg(jq_tab.find('span').text());
