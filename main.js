@@ -19,7 +19,7 @@ $(function() {
 				show('onChange', o.jqTab, o.jqContent);
 			},
 			onNewTab: function(o) {
-				lg('>>> callback_onNewTab')
+				lg('>>> onNewTab')
 				o.jqTab.html(
 					'<div>'+
 						'<span>NewTab-'+(++tabNumber)+'</span>'+
