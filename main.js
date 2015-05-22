@@ -5,8 +5,8 @@ $(function() {
 
 	function show(cb, jq_tab, jq_content) {
 		lg('>>> ' + cb)
-		lg(jq_tab.find('span').text());
-		lg(jq_content.find('p').text().substr(0, 25));
+		lg('tab     : "' + jq_tab.find('span').text() + '"');
+		lg('content : "' + jq_content.find('p').text() + '"');
 		lg('');
 	}
 
@@ -15,30 +15,30 @@ $(function() {
 		plugin_tabs = $.plugin_tabs(document.body, {
 			// noDragndrop: true,
 			// duration: 200,
-			onChange: function(jq_tab, jq_content) {
-				show('onChange', jq_tab, jq_content);
+			onChange: function(o) {
+				show('onChange', o.jqTab, o.jqContent);
 			},
-			onNewTab: function(jq_tab, jq_content) {
+			onNewTab: function(o) {
 				lg('>>> callback_onNewTab')
-				jq_tab.html(
+				o.jqTab.html(
 					'<div>'+
 						'<span>NewTab-'+(++tabNumber)+'</span>'+
 						'<a class="jqtabs-btnCloseTab fa fa-times-circle" href="#"></a>'+
 					'</div>'
 				);
-				jq_content.html(
+				o.jqContent.html(
 					'<p>NewTab: <b>'+tabNumber+'</b></p>'
 				);
 			},
-			onBeforeRemoveTab: function(jq_tab, jq_content) {
-				show('onBeforeRemoveTab', jq_tab, jq_content);
+			onBeforeRemoveTab: function(o) {
+				show('onBeforeRemoveTab', o.jqTab, o.jqContent);
 				if (0) // block the deletion or not
 					return false;
 			},
-			onAfterRemoveTab: function(jq_tab, jq_content, container) {
-				show('onAfterRemoveTab', jq_tab, jq_content);
-				if (1 === container.getTabs().length)
-					container.newTabAppend();
+			onAfterRemoveTab: function(o) {
+				show('onAfterRemoveTab', o.jqTab, o.jqContent);
+				if (1 === o.jqTabsContainer.getTabs().length)
+					o.jqTabsContainer.newTabAppend();
 			}
 		}),
 		tabsA = plugin_tabs.container['tabs_A']
