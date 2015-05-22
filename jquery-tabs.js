@@ -1,5 +1,5 @@
 /*
-	jQuery - tabs - 1.4
+	jQuery - tabs - 1.5
 	https://github.com/Mr21/jquery-tabs
 */
 
@@ -133,9 +133,10 @@ $.plugin_tabs.container.prototype = {
 		this._clickTab(this.jq_activeTab.nextAll('.' + this.plugin_jqtabs.class_tab).eq(0));
 		return this;
 	},
-	newTabPrepend: function() {
+	newTabPrepend: function(data) {
 		var jq_tabs = this.getTabs();
 		this._newTab(
+			data,
 			jq_tabs[0]
 				? 'insertBefore'
 				: 'prependTo',
@@ -145,9 +146,10 @@ $.plugin_tabs.container.prototype = {
 		);
 		return this;
 	},
-	newTabAppend:  function() {
+	newTabAppend:  function(data) {
 		var jq_tabs = this.getTabs();
 		this._newTab(
+			data,
 			jq_tabs[0]
 				? 'insertAfter'
 				: 'prependTo',
@@ -191,18 +193,19 @@ $.plugin_tabs.container.prototype = {
 		return this;
 	},
 	// private:
-	_callEvents: function(f, jq_tab, jq_content) {
+	_callEvents: function(f, jq_tab, jq_content, data) {
 		if (f = this.plugin_jqtabs[f])
-			return f.call(this.plugin_jqtabs.app,
-				jq_tab,
-				jq_content || jq_tab[0]._jqtabs_jqContent,
-				jq_tab[0]._jqtabs_container
-			);
+			return f.call(this.plugin_jqtabs.app, {
+				data: data,
+				jqTab: jq_tab,
+				jqContent: jq_content || jq_tab[0]._jqtabs_jqContent,
+				jqTabsContainer: jq_tab[0]._jqtabs_container
+			});
 	},
 	_findTabs: function() {
 		this.jq_arrayTabs = this.jq_tabs.children('.' + this.plugin_jqtabs.class_tab);
 	},
-	_newTab: function(attachFn, element) {
+	_newTab: function(data, attachFn, element) {
 		var
 			jq_tab = $('<div>')
 				.addClass(this.plugin_jqtabs.class_tab)
@@ -211,7 +214,7 @@ $.plugin_tabs.container.prototype = {
 				.addClass(this.plugin_jqtabs.class_content)
 				.appendTo(this.jq_contents);
 		this._findTabs();
-		this._callEvents('cbNewTab', jq_tab, jq_content);
+		this._callEvents('cbNewTab', jq_tab, jq_content, data);
 		this._initTab(jq_tab, jq_content);
 		this._clickTab(jq_tab);
 	},
