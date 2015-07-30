@@ -237,10 +237,10 @@ $.plugin_tabs.container.prototype = {
 	},
 
 	// private:
-	_callEvents: function( f, jqTab, jqContent, data ) {
-		if ( f = this.plugin_jqtabs[ f ] )
+	_callEvents: function( f, jqTab, jqContent ) {
+		if ( f = this.plugin_jqtabs[ f ] ) {
 			return f.call( this.plugin_jqtabs.app, {
-				data: data,
+				data: jqTab[ 0 ]._jqtabs_data,
 				jqTab: jqTab,
 				jqContent: jqContent,
 				jqTabsContainer: jqTab[ 0 ]._jqtabs_container
@@ -259,6 +259,7 @@ $.plugin_tabs.container.prototype = {
 				.addClass( this.plugin_jqtabs.class_content )
 				.appendTo( this.jqContents )
 		;
+		jqTab[ 0 ]._jqtabs_data = data;
 		this._findTabs();
 		this._callEvents( "cbNewTab", jqTab, jqContent );
 		this._initTab( jqTab, jqContent );
