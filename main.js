@@ -2,10 +2,11 @@ $(function() {
 
 	$( "#moreAt" )[ top.location === self.location ? "show" : "remove" ]();
 
-	function show( cb, jqTab, jqContent ) {
+	function show( cb, obj ) {
 		lg( ">>> " + cb );
-		lg( "tab     : '" + jqTab.find( "span" ).text() + "'" );
-		lg( "content : '" + jqContent.find( "p" ).text() + "'" );
+		lg( "    data : " + obj.data );
+		lg( "    jqTab : '" + obj.jqTab.text() + "'" );
+		lg( "    jqContent : '" + obj.jqContent.text() + "'" );
 		lg( "" );
 	}
 
@@ -15,10 +16,10 @@ $(function() {
 			// noDragndrop: true,
 			// duration: 200,
 			onChange: function( o ) {
-				show( "onChange", o.jqTab, o.jqContent );
+				show( "onChange", o );
 			},
 			onNewTab: function( o ) {
-				lg( ">>> onNewTab" );
+				show( "onNewTab", o );
 				o.jqTab.html(
 					"<div>"+
 						"<span>NewTab-"+ (++tabNumber) +"</span>"+
@@ -30,13 +31,13 @@ $(function() {
 				);
 			},
 			onBeforeRemoveTab: function( o ) {
-				show( "onBeforeRemoveTab", o.jqTab, o.jqContent );
+				show( "onBeforeRemoveTab", o );
 				if ( 0 ) { // block the deletion or not
 					return false;
 				}
 			},
 			onAfterRemoveTab: function( o ) {
-				show( "onAfterRemoveTab", o.jqTab, o.jqContent );
+				show( "onAfterRemoveTab", o );
 				if ( 1 === o.jqTabsContainer.getTabs().length ) {
 					o.jqTabsContainer.newTabAppend();
 				}
@@ -45,6 +46,6 @@ $(function() {
 		tabsA = plugin_tabs.container[ "tabs_A" ]
 	;
 
-	$( ".newTabAppend" ) .click( function() { tabsA.newTabAppend();  } );
-	$( ".newTabPrepend" ).click( function() { tabsA.newTabPrepend(); } );
+	$( ".newTabAppend" ) .click( function() { tabsA.newTabAppend(   "append-data" ); } );
+	$( ".newTabPrepend" ).click( function() { tabsA.newTabPrepend( "prepend-data" ); } );
 });

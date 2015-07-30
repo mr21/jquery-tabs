@@ -28,17 +28,22 @@ $.plugin_tabs.obj = function( jqParent, options ) {
 	this.class_tabClosing     = options.class_tabClosing     || "jqtabs-tabClosing";
 	this.class_contentClosing = options.class_contentClosing || "jqtabs-contentClosing";
 
+	// The container who wraps all the <div class=".jqTabs"/>.
 	this.jqParent = jqParent;
+
 	this.container = [];
 	if ( !options.noDragndrop && $.plugin_dragndrop ) {
 		this._dragndropInit();
 	}
 	this.applyThis( options.applyThis );
 	this.duration( options.duration === undefined ? 200 : options.duration );
+
+	// Setting of the user's callbacks.
 	this.onChange( options.onChange );
 	this.onNewTab( options.onNewTab );
 	this.onBeforeRemoveTab( options.onBeforeRemoveTab );
 	this.onAfterRemoveTab( options.onAfterRemoveTab );
+
 	this._watchDom();
 	this._initContainer( jqParent );
 };
@@ -181,12 +186,15 @@ $.plugin_tabs.container.prototype = {
 			that = this,
 			jqContent = jqTab[ 0 ]._jqtabs_jqContent
 		;
+
+		// This part of code is inside a function because this code
+		// will be executed right now or after a specific delay (ms).
 		function f() {
-			that._callEvents( "cbAfterRemoveTab", jqTab );
+			that._callEvents( "cbAfterRemoveTab", jqTab, jqContent );
 			if ( jqTab[ 0 ] === that.jqActiveTab[ 0 ] ) {
-				var jqNext = jqTab.nextAll( "." + that.plugin_jqtabs.class_tab + ":first" );
+				var jqNext = jqTab.nextAll( "."+ that.plugin_jqtabs.class_tab +":first" );
 				if ( !jqNext[ 0 ] ) {
-					jqNext = jqTab.prevAll( "." + that.plugin_jqtabs.class_tab + ":first" );
+					jqNext = jqTab.prevAll( "."+ that.plugin_jqtabs.class_tab +":first" );
 				}
 			}
 			jqTab.remove();
@@ -200,17 +208,31 @@ $.plugin_tabs.container.prototype = {
 				}
 			}
 		}
-		if ( this._callEvents( "cbBeforeRemoveTab", jqTab ) !== false ) {
-			if ( delay === undefined )
+
+		// The user has the possibility to set a callback to decide
+		// if the <div class="jqTab"/> has to be remove or not.
+		// Like a confirm for example.
+		if ( this._callEvents( "cbBeforeRemoveTab", jqTab, jqContent ) !== false ) {
+
+			// If we didn't pass a delay to the .removeTab methode
+			// we set the global duration setting by default
+			if ( delay === undefined ) {
 				delay = this.plugin_jqtabs.ms;
-			if ( !delay ) {
+			}
+
+			// If there is no delay we remove the <div class="jqTab"/> immediatly.
+			if ( delay === 0 ) {
 				f();
 			} else {
+
+				// If the user chose to animate the deletion of the <div class="jqTab"/>
+				// we add a class to the elements to allow the user to put some CSS on his side.
 				jqTab.addClass( this.plugin_jqtabs.class_tabClosing );
 				jqContent.addClass( this.plugin_jqtabs.class_contentClosing );
 				setTimeout( f, delay );
 			}
 		}
+
 		return this;
 	},
 
@@ -220,9 +242,10 @@ $.plugin_tabs.container.prototype = {
 			return f.call( this.plugin_jqtabs.app, {
 				data: data,
 				jqTab: jqTab,
-				jqContent: jqContent || jqTab[ 0 ]._jqtabs_jqContent,
+				jqContent: jqContent,
 				jqTabsContainer: jqTab[ 0 ]._jqtabs_container
 			});
+		}
 	},
 	_findTabs: function() {
 		this.jqArrayTabs = this.jqTabs.children( "." + this.plugin_jqtabs.class_tab );
@@ -237,7 +260,7 @@ $.plugin_tabs.container.prototype = {
 				.appendTo( this.jqContents )
 		;
 		this._findTabs();
-		this._callEvents( "cbNewTab", jqTab, jqContent, data );
+		this._callEvents( "cbNewTab", jqTab, jqContent );
 		this._initTab( jqTab, jqContent );
 		this._clickTab( jqTab );
 	},
@@ -282,11 +305,12 @@ $.plugin_tabs.container.prototype = {
 	},
 	_activeTab: function( jqTab ) {
 		this.jqActiveTab = jqTab.addClass( this.plugin_jqtabs.class_tabActive );
-		jqTab[ 0 ]._jqtabs_jqContent.addClass( this.plugin_jqtabs.class_contentActive );
-		this._callEvents( "cbChange", jqTab );
+		var jqContent = jqTab[ 0 ]._jqtabs_jqContent;
+		jqContent.addClass( this.plugin_jqtabs.class_contentActive );
+		this._callEvents( "cbChange", jqTab, jqContent );
 	},
 	_desactiveTab: function() {
-		if (this.jqActiveTab[ 0 ]) {
+		if ( this.jqActiveTab[ 0 ] ) {
 			this.jqActiveTab.removeClass( this.plugin_jqtabs.class_tabActive );
 			this.jqActiveTab[ 0 ]._jqtabs_jqContent.removeClass( this.plugin_jqtabs.class_contentActive );
 		}
